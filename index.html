@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>The ultimate Lahmacun Lottery</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
+		<style> 
+		* {
+			margin: 0;
+			padding: 0;
+			z-index:1;
+			box-sizing: border-box;
+		}
+		html {
+			background: radial-gradient(circle, rgba(97,182,212,1) 0%, rgba(15,76,142,1) 100%);
+			overflow: hidden;
+			height: 100%;
+			width:100%;
+		}
+		
+		body {			
+			width: 100%;
+			height: 100%;
+		}
+			
+		.grid {
+			display:grid;
+			width:100%;
+			height:100%;
+			grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+			grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		}
+		
+		.headline {
+			grid-column:2/16;
+			grid-row: 2;
+			text-align: center;
+			font-size: 3em;
+			font-weight: 500;
+			font-family: Montserrat,sans-serif;
+			color:white;
+		}
+		
+		.view {
+			height: 100%;
+			width: 100%;
+			grid-row: 3/19;
+			grid-column:2/16;
+			background-color: #051836;
+			border-radius: 10px;
+			overflow-y: auto;
+			box-shadow: 0px 0px 20px black;
+		}
+		
+		.tablePlace {
+			color:white;
+			text-align: center;
+			font-size: 32pt;
+			width: 70px;
+			height: 70px;
+			border-right: 1px solid white;
+			border-radius: 0 !important;
+		}
+		
+		.startButton{
+			height: 100%;
+			width: 100%;
+			grid-column: 2/16;
+			grid-row: 20;
+			color: white;
+			border-radius: 10px;
+			font-family: Montserrat,sans-serif;
+			font-weight:500;
+			font-size: 2rem;
+			box-shadow: 0px 0px 10px black;
+			background-color: #051836;
+			border: 1px solid white;
+			text-transform:uppercase;
+			transition: background-color .25s;
+			cursor:pointer;
+		}
+		
+		.startButton:hover{
+			background-color:#1183d9;
+		}
+		
+		.removeRow {
+			color:white;
+			font-weight: bold;
+			text-align: center;
+			cursor: pointer;
+			font-size: 39pt;
+			width: 70px;
+			height: 70px;
+			border-left: 1px solid white;
+			margin-left: auto;
+		}		
+		
+		.playerRowNum, .playerDiffNum  {
+			color:white;
+			text-align: center;
+			font-size: 32pt;
+			width: 70px;
+			height: 70px;
+			border-left: 1px solid white;
+			border-radius: 0 !important;
+			margin-left: auto;
+		}
+		
+		.popup {
+			z-index: 2;
+			width: 100%;
+			height:100%;
+			position:absolute;
+			background-color:rgba(0,0,0,0.6); 
+			opacity: 0;
+			display:none;
+			transition: opacity .5s;
+		}
+		
+		.addButton {
+			width: 100%;
+			height: 100%;
+			color: white;
+			font-family: Montserrat,sans-serif;
+			font-weight: 400;
+			font-size: 1em;
+			border-radius: 0px;
+			border: none;
+			background-color: #3e527e;
+			cursor:pointer;
+		}
+		
+		.nextButton {
+			width: 100%;
+			height: 50px;
+			color: white;
+			font-family: Montserrat,sans-serif;
+			font-size: 2em;
+			border-radius: 0 0 10px 10px;
+			border: none;
+			background-color: #3e527e;
+			position: inherit;
+			bottom: 0;
+			left: 0;
+		}
+			
+		.addButton:hover{
+			background-color:#1183d9;
+		}
+		
+		.popup .window {
+			background-color: #74929f;
+			width: 80%;
+			height: 80%;
+			position:absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			box-shadow: 0px 0px 30px black;
+			border-radius: 10px;
+			border-top-left-radius: 10px;
+			border-top-right-radius: 10px;
+			text-align:center;
+		}
+		
+		.rangeNumber {
+			width: 200px;
+			height: 200px;
+			text-align: center;
+			font-size: 65pt;
+			margin-top: 20px;
+			font-family: Montserrat,sans-serif;
+			
+		}	
+		
+		.playerInput {
+			border: 0;
+			border-radius: 0;
+			width: 70px;
+			height: 70px;
+			text-align: center;
+			font-size: 24pt;
+			font-family: Montserrat,sans-serif;
+			margin-left: auto;
+		}
+		
+		.inputTable {
+			margin: 20px auto;
+			width: 90%;
+		}
+		
+		.inputTable tr:first-of-type .playerInput {
+			border-radius: 0 10px 0 0;
+		}
+		
+		.inputTable tr:last-of-type .playerInput {
+			border-radius: 0 0 10px 0;
+		}
+		
+		.inputTable tr:last-of-type td {
+			padding: 10px;
+		}
+		
+		.dialogTitle {
+			text-align: center;
+			font-size: 2em;
+			font-weight: 500;
+			font-family: Montserrat,sans-serif;
+			color:white;
+			padding-top: 10px;
+		}
+		
+		table {
+			color: white;
+			font-family: Montserrat,sans-serif;
+			font-weight: 300;
+			font-size: 2.5em;
+			border: 1px solid white;
+			border-collapse: separate;
+			border-radius: 10px;
+			width: 100%;
+		}
+		
+		tr:first-of-type {
+			border-top-left-radius: 10px;
+			border-top-right-radius: 10px;	
+		}
+		
+		tr:last-of-type * {
+			padding: 0;
+			border-bottom-left-radius: 10px;
+			border-bottom-right-radius: 10px;	
+		}
+		
+		tr:last-of-type {
+			border-bottom: none;	
+		}
+		
+		tr {
+			display: flex;
+			border-bottom: 1px solid white;
+		}
+		
+		td {
+			padding: 10px;
+			text-align:left;
+		}
+		
+		</style>
+	</head>
+	<body>
+		<div class="grid">
+			<div class="headline">Lahmacun Lottery</div>
+			<div class="popup">
+				<div class="window"></div>
+			</div>
+			<div class="view">
+				<div class="playerlist">
+					<table id="game-table">
+					</table>
+				</div>
+				<div class="game"></div>
+			</div>
+			<button class="startButton" onclick="game.start();">Start Game</button>
+		</div>
+		<script>
+			class Player {
+				constructor(name) {
+					this.name = name;
+					this.zahl = 0;
+					this.random = 0;
+					this.diff = 0;
+					this.row = this.buildRow();
+				}
+				
+				buildRow() {
+					var row = document.createElement("tr");
+					var nameItem = document.createElement("td");
+					nameItem.innerText = this.name;
+					row.appendChild(nameItem);
+					var removeButton = document.createElement("div");
+					removeButton.innerText = "x";
+					removeButton.classList.add("removeRow");
+					row.appendChild(removeButton);
+					return row;
+				}
+				
+				setRandom( value ) {
+					this.random = value;
+					this.diff = Math.abs(Math.abs(this.random) - Math.abs(this.zahl));
+				}
+			}
+			class Game {
+				constructor(players = new Array()) {
+					this.players = players
+					this.table = document.querySelector("#game-table");
+					this.dialog = document.querySelector(".popup");
+					this.dialogWindow = document.querySelector(".window");
+					this.buildTable();
+					
+				}
+				showRangeDialog() {
+					this.clearDialog();
+					this.buildRangeDialog();
+					this.dialog.style.display = "block";
+					this.dialog.style.transition = "opacity .5s";
+					setTimeout(() => {this.dialog.style.opacity = 1;}, 1);
+					
+					
+				}
+				
+				buildRangeDialog() {
+					var contentDiv = document.createElement("div");
+					contentDiv.classList.add("contentDiv");
+					var title = document.createElement("div");
+					title.classList.add("dialogTitle");
+					title.innerText = "Set the range of numbers";
+					
+					var pos1 = document.createElement("input");
+					pos1.classList.add("rangeNumber");
+					pos1.type = "number";
+					pos1.placeholder = "Min";
+					pos1.id = "minVal";
+					var pos2 = pos1.cloneNode();
+					pos2.placeholder = "Max";
+					pos2.id = "maxVal";
+					var nextButton = document.createElement("button");
+					nextButton.classList.add("nextButton");
+					nextButton.innerText = "Next";
+					nextButton.onclick = () => {
+						this.buildPlayerInput();
+					};
+					
+					contentDiv.appendChild(title);
+					
+					this.dialogWindow.appendChild(contentDiv);
+					this.dialogWindow.appendChild(pos1);
+					this.dialogWindow.appendChild(pos2);
+					this.dialogWindow.appendChild(nextButton);
+					
+					
+				}
+				
+				buildPlayerInput() {
+					this.minVal = document.querySelector("#minVal").value != "" ? document.querySelector("#minVal").value : 1;
+					this.maxVal = document.querySelector("#maxVal").value != "" ? document.querySelector("#maxVal").value : 100;
+					this.clearDialog();
+					
+					var contentDiv = document.createElement("div");
+					contentDiv.classList.add("contentDiv");
+					var title = document.createElement("div");
+					title.classList.add("dialogTitle");
+					title.innerText = "Submit your tip!";
+
+					var nextButton = document.createElement("button");
+					nextButton.classList.add("nextButton");
+					nextButton.innerText = "Let's start!";
+					nextButton.onclick = () => {
+						this.StartGame();
+					};
+					
+					contentDiv.appendChild(title);
+					
+					var inputTable = document.createElement("table");
+					inputTable.classList.add("inputTable");
+					
+					for( var i = 0; i < this.players.length; i++) {
+						var playerRow = this.players[i].row;
+						playerRow.removeChild(playerRow.lastChild);
+						var playerInput = document.createElement("input");
+						playerInput.type = "number";
+						playerInput.classList.add("playerInput");
+						playerInput.id = "playerInput_" + i;
+						playerInput.min = this.minVal;
+						playerInput.max = this.maxVal;
+						
+						this.players[i].input = playerInput;
+						playerRow.appendChild(playerInput);
+						inputTable.appendChild(playerRow);
+					}
+					
+					this.dialogWindow.appendChild(contentDiv);
+					this.dialogWindow.appendChild(inputTable);		
+					this.dialogWindow.appendChild(nextButton);
+				}
+				
+				StartGame() {
+					for(var i = 0; i < this.players.length; i++) {
+
+						if(this.players[i].input.value == "") {
+							console.log("Player " + this.players[i].name + " made no tip!");
+							return;
+						} else {
+							players[i].zahl = this.players[i].input.value;
+						}
+						
+					}
+					
+					this.clearDialog();
+						
+					var contentDiv = document.createElement("div");
+					contentDiv.classList.add("contentDiv");
+					var title = document.createElement("div");
+					title.classList.add("dialogTitle");
+					title.innerText = "Your random numbers!";
+					
+					var nextButton = document.createElement("button");
+					nextButton.classList.add("nextButton");
+					nextButton.innerText = "Show Results";
+					nextButton.onclick = () => {
+						this.ShowRanking();
+					};
+					
+					contentDiv.appendChild(title);
+					
+					var inputTable = document.createElement("table");
+					inputTable.classList.add("inputTable");
+
+
+					for( var i = 0; i < this.players.length; i++) {
+						this.players[i].setRandom(Math.floor(Math.random() * (this.maxVal - this.minVal)) + parseInt(this.minVal));
+						var numField = document.createElement("td");
+						numField.innerText = this.players[i].random;
+						numField.classList.add("playerRowNum");
+						var playerRow = this.players[i].row;
+						playerRow.removeChild(playerRow.lastChild);
+						playerRow.appendChild(numField);
+						inputTable.appendChild(playerRow);
+					}
+					
+					this.dialogWindow.appendChild(contentDiv);
+					this.dialogWindow.appendChild(inputTable);
+					this.dialogWindow.appendChild(nextButton);
+					
+				}
+				
+				ShowRanking() {
+					this.clearDialog();
+					
+					var contentDiv = document.createElement("div");
+					contentDiv.classList.add("contentDiv");
+					var title = document.createElement("div");
+					title.classList.add("dialogTitle");
+					title.innerText = "- Ranking -";
+					contentDiv.appendChild(title);
+					var placementPlayers = this.players;
+					
+					placementPlayers.sort((a,b) => {
+						return a.diff - b.diff;
+					});
+					
+					var inputTable = document.createElement("table");
+					inputTable.classList.add("inputTable");
+					
+					for( var i = 0; i < placementPlayers.length; i++) {
+						var placeTd = document.createElement("td");
+						placeTd.classList.add("tablePlace");
+						placeTd.innerText = i+1 +".";
+						var diffTd = document.createElement("td");
+						diffTd.classList.add("playerDiffNum");
+						diffTd.innerText = placementPlayers[i].diff;
+						var playerRow = placementPlayers[i].row;
+						playerRow.prepend(placeTd);
+						playerRow.removeChild(playerRow.lastChild);
+						playerRow.appendChild(diffTd);
+						inputTable.appendChild(playerRow);
+					}
+					
+					this.dialogWindow.appendChild(contentDiv);
+					this.dialogWindow.appendChild(inputTable);
+				}
+				
+				clearDialog() {
+					for(var i = this.dialogWindow.childNodes.length-1; i >= 0; i--) {
+						this.dialogWindow.childNodes[i].remove();
+					}
+					
+				}
+				
+				buildTable() {
+					for( var i = 0; i < this.players.length; i++) {
+						this.table.appendChild(this.players[i].row);
+					}
+					var button = document.createElement("button");
+					var buttonRow = document.createElement("tr");
+
+					button.classList.add("addButton");
+					button.innerText = "+ Add Player +";
+					this.addButton = button;
+					
+					
+					
+					buttonRow.appendChild(this.addButton);
+					this.table.appendChild(buttonRow);
+				}
+				
+				start() {
+					this.showRangeDialog();
+				}
+				
+				addPlayer(name) {
+					this.players.push(new Player(name));
+				}
+				
+				removePlayer(name) {
+					for(var i = 0; i < this.players.length; i++) {
+						if (this.players[i].name == name) {
+							delete this.players[i];
+							this.players = this.players.splice(i,1);
+						}
+					}
+				}
+			}
+			
+			var players = new Array(new Player("Daniel"), 
+							new Player("Valentin"), 
+							new Player("Jason"), 
+							new Player("Richard"), 
+							new Player("Thomas"));
+			var game = new Game(players);
+		</script>
+	</body>
+</html>
